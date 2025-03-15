@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Username</title>
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            color: #666;
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-top: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Questions and Meme */
+        #question, #ninjaQuestion {
+            font-weight: bold;
+            color: #e74c3c;
+            display: none; /* Initially hidden */
+            margin: 20px 0;
+        }
+        #questionContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+        }
+        #meme {
+            margin-left: 15px;
+            max-width: 80px;
+            height: auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        /* Success & Error Messages */
+        .error {
+            color: #e74c3c;
+        }
+        .success {
+            color: #2ecc71;
+        }
+
+        /* Smooth Transitions */
+        .fade {
+            animation: fadeInOut 3s ease-in-out;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create a Username</h1>
+        <p>Please enter your desired username below and press Enter:</p>
+        <input type="text" id="inputField" autofocus placeholder="Enter your username" autocomplete="off" />
+        <p id="message"></p>
+
+        <!-- Question and Meme for Chill Guy -->
+        <div id="questionContainer">
+            <p id="question">What's the name of this distinguished gentleman?</p>
+            <img id="meme" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c7/Chill_guy_original_artwork.jpg/220px-Chill_guy_original_artwork.jpg" alt="Chill Guy Meme" />
+        </div>
+
+        <!-- Question for Ninja -->
+        <p id="ninjaQuestion">Who got a low taper fade?</p>
+    </div>
+
+    <script>
+        let username = '';
+        const inputField = document.getElementById('inputField');
+        const message = document.getElementById('message');
+        const question = document.getElementById('question');
+        const ninjaQuestion = document.getElementById('ninjaQuestion');
+        const meme = document.getElementById('meme');
+        const questionContainer = document.getElementById('questionContainer');
+
+        // Disable pasting into the username input field
+        inputField.addEventListener('paste', (event) => {
+            event.preventDefault();
+            message.textContent = 'Pasting is not allowed for the username!';
+            message.style.color = 'red';
+        });
+
+        // Disable autocomplete and form input retention
+        inputField.setAttribute('autocomplete', 'off');
+        inputField.setAttribute('autocorrect', 'off');
+        inputField.setAttribute('autocapitalize', 'off');
+        inputField.setAttribute('spellcheck', 'false');
+
+        window.onload = () => {
+            message.textContent = 'Please create a username to begin.';
+        };
+
+        inputField.addEventListener('input', () => {
+            username = inputField.value;
+
+            // Level 2: Check for a binary number greater than 10
+            const binaryMatch = username.match(/[01]+/); // Look for binary numbers
+            if (binaryMatch) {
+                const binaryNumber = parseInt(binaryMatch[0], 2);
+                if (binaryNumber > 10) {
+                    message.textContent = ''; // Clear any previous message
+                    // Show Chill Guy meme and question
+                    question.style.display = 'block'; // Show the question
+                    meme.style.display = 'block'; // Show the meme
+                    questionContainer.style.display = 'flex'; // Show meme container
+                } else {
+                    // If binary number is not greater than 10, show error
+                    message.textContent = 'The binary number must be greater than 10.';
+                    message.style.color = 'red'; // Invalid, show in red
+                }
+            } else {
+                // If no binary number is found, show error
+                message.textContent = 'Your username must contain a binary number.';
+                message.style.color = 'red'; // Invalid, show in red
+            }
+
+            // Level 3: Show "ninja" question when "chillguy" appears in username
+            if (username.toLowerCase().includes('chillguy')) {
+                // Once "chillguy" is detected, hide the Chill Guy meme and question
+                question.style.display = 'none'; 
+                meme.style.display = 'none'; 
+                questionContainer.style.display = 'none';
+
+                // Show the ninja question
+                ninjaQuestion.style.display = 'block'; 
+
+                // Validate if "ninja" is typed
+                if (username.toLowerCase().includes('ninja')) {
+                    // Once "ninja" is detected, hide the question and complete validation
+                    ninjaQuestion.style.display = 'none'; 
+                    message.textContent = 'Username is valid! You can now continue.';
+                    message.style.color = 'green'; // Valid, show in green
+                }
+            }
+
+            // Final Validation: Check if all requirements are met
+            if (username) {
+                if (username.toLowerCase().includes('chillguy') && username.toLowerCase().includes('ninja') && binaryMatch && parseInt(binaryMatch[0], 2) > 10) {
+                    message.textContent = 'Username is valid! You can now continue.';
+                    message.style.color = 'green'; // Valid, show in green
+                }
+            } else {
+                message.textContent = 'Please enter a valid username.';
+                message.style.color = 'red'; // Invalid, show in red
+            }
+        });n
+    </script>
+    <a href="c:\Users\adria\OneDrive\Desktop\create acount\password.html" style="display: inline-block; padding: 15px 30px; background-color: #4CAF50; color: white; text-align: center; text-decoration: none; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); font-size: 16px;">Next Step</a>
+
+</body>
+</html>
+

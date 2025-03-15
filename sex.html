@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender Selection Dartboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Outer Container */
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 450px;
+            text-align: center;
+        }
+
+        /* Dartboard Styling */
+        .dartboard-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background-color: #ddd;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 5px solid black; /* Outline around the circle */
+        }
+
+        /* Dartboard Sections */
+        .section {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+            transform-origin: center;
+        }
+
+        /* Unique colors for each section */
+        .section:nth-child(1) { background-color: lightblue; transform: rotate(0deg); }    
+        .section:nth-child(2) { background-color: lightgreen; transform: rotate(60deg); }   
+        .section:nth-child(3) { background-color: lightcoral; transform: rotate(120deg); }  
+        .section:nth-child(4) { background-color: lightyellow; transform: rotate(180deg); } 
+        .section:nth-child(5) { background-color: lightpink; transform: rotate(240deg); }   
+        .section:nth-child(6) { background-color: lightgray; transform: rotate(300deg); }   
+
+        /* Sniper Reticle Crosshair */
+        .crosshair {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: top 0.2s ease-out, left 0.2s ease-out; /* Smooth movement */
+        }
+
+        /* Reticle Circle */
+        .crosshair::before {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 2px solid red;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+        }
+
+        /* Reticle Cross Lines */
+        .crosshair::after {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            top: 0;
+            left: 0;
+            background: linear-gradient(to right, transparent 49%, red 49%, red 51%, transparent 51%),
+                        linear-gradient(to bottom, transparent 49%, red 49%, red 51%, transparent 51%);
+        }
+
+        /* Gender Button */
+        .button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .gender-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .gender-button:hover {
+            background-color: #45a049;
+        }
+
+        .gender-button:disabled {
+            background-color: gray;
+            cursor: default;
+        }
+
+        /* Gender Color Legend */
+        .legend-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .legend-color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Gender Selection Dartboard</h2>
+        <div class="dartboard-container" id="dartboard">
+            <div class="section"></div>
+            <div class="section"></div>
+            <div class="section"></div>
+            <div class="section"></div>
+            <div class="section"></div>
+            <div class="section"></div>
+            <div class="crosshair" id="crosshair"></div>
+        </div>
+
+        <div class="button-container">
+            <button class="gender-button" id="selectedGenderButton">Select Gender</button>
+        </div>
+
+        <div class="legend-container">
+            <div class="legend-item"><div class="legend-color-box" style="background-color: lightblue;"></div><span>Man</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background-color: lightgreen;"></div><span>Woman</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background-color: lightcoral;"></div><span>Coca-Cola</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background-color: lightyellow;"></div><span>Pateu</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background-color: lightpink;"></div><span>Sigma</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background-color: lightgray;"></div><span>Boneca Ambalabu</span></div>
+        </div>
+    </div>
+
+    <script>
+        const dartboard = document.getElementById('dartboard');
+        const crosshair = document.getElementById('crosshair');
+        const selectedGenderButton = document.getElementById('selectedGenderButton');
+
+        const genders = ['Man', 'Woman', 'Coca-Cola', 'Pateu', 'Sigma', 'Boneca Ambalabu'];
+        let currentSection = -1;
+        let selectionMade = false;
+        let moveInterval;
+
+        function moveCrosshair() {
+            if (selectionMade) return; // Stop movement after selection
+            
+            const randomDegree = Math.random() * 360;
+            const x = Math.cos(randomDegree * Math.PI / 180) * 150 + 200;
+            const y = Math.sin(randomDegree * Math.PI / 180) * 150 + 200;
+
+            // Smoothly move crosshair instead of teleporting
+            crosshair.style.left = `${x}px`;
+            crosshair.style.top = `${y}px`;
+
+            currentSection = Math.floor(randomDegree / 60);
+        }
+
+        selectedGenderButton.addEventListener('click', () => {
+            if (selectionMade) return;
+
+            const selectedGender = genders[currentSection];
+            selectedGenderButton.textContent = `Selected Gender: ${selectedGender}`;
+            selectionMade = true;
+            selectedGenderButton.disabled = true;
+
+            clearInterval(moveInterval); // Stop crosshair movement
+        });
+
+        moveInterval = setInterval(moveCrosshair, 100);
+        moveCrosshair();
+    </script>
+            <a href="c:\Users\adria\OneDrive\Desktop\create acount\phone number.html" style="display: inline-block; padding: 15px 30px; background-color: #4CAF50; color: white; text-align: center; text-decoration: none; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); font-size: 16px;">Next Step</a>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<style>
+    .phone-selection-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 300px;
+        padding: 20px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin-top: 20px;
+    }
+
+    .phone-selection-container label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    #phoneNumber {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        text-align: center;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        outline: none;
+        cursor: not-allowed;
+        margin-bottom: 10px;
+    }
+
+    .confirmation-container {
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .button-container button {
+        padding: 10px 20px;
+        width: 45%;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .button-container button#yesButton {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .button-container button#noButton {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .button-container button:hover {
+        opacity: 0.8;
+    }
+</style>
+
+<div class="phone-selection-container">
+    <label for="phoneNumber">Phone Number (Required):</label>
+    <input type="text" id="phoneNumber" readonly>
+    
+    <div class="confirmation-container">
+        <p>Is the phone number correct?</p>
+    </div>
+
+    <div class="button-container">
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+    </div>
+</div>
+
+<script>
+    const phoneNumberInput = document.getElementById('phoneNumber');
+    const yesButton = document.getElementById('yesButton');
+    const noButton = document.getElementById('noButton');
+
+    // Function to generate a random Romanian phone number in format +40 72X XXX XXX
+    function generateRandomPhoneNumber() {
+        const prefix = '72'; // Fixed prefix
+        const randomDigit = Math.floor(Math.random() * 10); // Random digit for the 3rd digit
+        const number = "+40 " + prefix + randomDigit + " " + 
+                      Math.floor(100 + Math.random() * 900) + " " + // 3 digits
+                      Math.floor(100 + Math.random() * 900); // 3 digits
+        return number;
+    }
+
+    // Generate the phone number
+    phoneNumberInput.value = generateRandomPhoneNumber();
+
+    // When clicking the "Yes" button
+    yesButton.addEventListener('click', () => {
+        yesButton.disabled = true;
+        noButton.disabled = true;
+        phoneNumberInput.disabled = true; // Disable phone number input
+        alert("You confirmed the phone number as correct!");
+    });
+
+    // When clicking the "No" button, randomize the number again
+    noButton.addEventListener('click', () => {
+        phoneNumberInput.value = generateRandomPhoneNumber();
+    });
+</script>
+<a href="c:\Users\adria\OneDrive\Desktop\create acount\age.html" style="display: inline-block; padding: 15px 30px; background-color: #4CAF50; color: white; text-align: center; text-decoration: none; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); font-size: 16px;">Next Step</a>

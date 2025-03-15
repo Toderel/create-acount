@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historical Timeline</title>
+  <style>
+    /* General reset and styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f4f4f4;
+      margin: 0;
+      color: #333;
+    }
+
+    /* Container for the timeline and select features */
+    .timeline-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 1000px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    /* Slider container */
+    .slider-container {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    #year-selector {
+      width: 100%;
+      height: 8px;
+      background: #e2e2e2;
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    #year-selector::-webkit-slider-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #3498db;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    #year-selector::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    #year-display {
+      font-size: 24px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    /* Timeline labels */
+    .timeline-markers {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+
+    .marker {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    /* Select Button */
+    #select-btn {
+      margin-top: 30px;
+      padding: 12px 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    #select-btn:hover {
+      background: #2980b9;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .timeline-container {
+        width: 90%;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      #year-display {
+        font-size: 20px;
+      }
+
+      .timeline-markers {
+        flex-direction: column;
+        margin-top: 20px;
+      }
+
+      .marker {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="timeline-container">
+    <h2>Select Your Birth Year</h2>
+
+    <div class="slider-container">
+      <input type="range" id="year-selector" min="-2000" max="2025" value="2025">
+    </div>
+
+    <p id="year-display">2025 AD</p>
+
+    <button id="select-btn">Select</button>
+
+    <div class="timeline-markers">
+      <div class="marker">2000 BC</div>
+      <div class="marker">Roman Empire</div>
+      <div class="marker">Middle Ages</div>
+      <div class="marker">Renaissance</div>
+      <div class="marker">Industrial Revolution</div>
+      <div class="marker">Modern Era</div>
+      <div class="marker">Present Day</div>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById('year-selector');
+    const yearDisplay = document.getElementById('year-display');
+
+    // Update year display based on slider
+    slider.addEventListener('input', function() {
+      const value = slider.value;
+      if (value < 0) {
+        yearDisplay.textContent = Math.abs(value) + " BC";
+      } else {
+        yearDisplay.textContent = value + " AD";
+      }
+    });
+
+    // Button click functionality
+    const selectButton = document.getElementById('select-btn');
+    selectButton.addEventListener('click', () => {
+      alert(`You selected the year: ${yearDisplay.textContent}`);
+    });
+  </script>
+
+</body>
+</html>
+

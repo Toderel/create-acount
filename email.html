@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Submission Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            position: relative;
+        }
+        .email-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .email-form input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .email-form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .email-form button:hover {
+            background-color: #0056b3;
+        }
+        .domain-selector {
+            display: none;
+            margin-top: 20px;
+        }
+        .domain-selector select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .confirm-email {
+            display: none;
+            margin-top: 20px;
+        }
+        .confirm-email button {
+            background-color: #28a745;
+        }
+        .confirm-email button:hover {
+            background-color: #218838;
+        }
+        .next-step-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 30px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <form class="email-form" id="emailForm">
+        <label for="email">Enter your email:</label>
+        <input type="email" id="email" name="email" placeholder="example@domain.com" required maxlength="30">
+        <button type="submit">Submit</button>
+    </form>
+
+    <div class="domain-selector">
+        <label for="domain">Choose your domain:</label>
+        <select id="domain">
+            <option value="@gmail.com">@gmail.com</option>
+            <option value="@yahoo.com">@yahoo.com</option>
+            <option value="@outlook.com">@outlook.com</option>
+            <option value="@icloud.com">@icloud.com</option>
+            <option value="@hotmail.com">@hotmail.com</option>
+            <option value="@aol.com">@aol.com</option>
+            <option value="@live.com">@live.com</option>
+            <option value="@zoho.com">@zoho.com</option>
+            <option value="@mail.com">@mail.com</option>
+            <option value="@protonmail.com">@protonmail.com</option>
+            <option value="@yandex.com">@yandex.com</option>
+        </select>
+        <button id="choose-domain">Choose Domain</button>
+    </div>
+
+    <div class="confirm-email">
+        <p>Is this the correct email address?</p>
+        <p id="email-preview"></p>
+        <button id="confirm-email">Yes</button>
+        <button id="edit-email">No, let me edit</button>
+    </div>
+
+    <button class="next-step-button" id="nextStepButton">Next Step</button>
+
+    <script>
+        const emailInput = document.getElementById('email');
+        const domainSelector = document.querySelector('.domain-selector');
+        const domainSelect = document.getElementById('domain');
+        const chooseDomainButton = document.getElementById('choose-domain');
+        const confirmEmailSection = document.querySelector('.confirm-email');
+        const emailPreview = document.getElementById('email-preview');
+        const emailForm = document.getElementById('emailForm');
+        const confirmEmailButton = document.getElementById('confirm-email');
+        const editEmailButton = document.getElementById('edit-email');
+        const nextStepButton = document.getElementById('nextStepButton');
+
+        domainSelector.style.display = 'none';
+        confirmEmailSection.style.display = 'none';
+
+        emailInput.addEventListener('input', () => {
+            if (emailInput.value.length === 10) {
+                domainSelector.style.display = 'block';
+            }
+        });
+
+        chooseDomainButton.addEventListener('click', () => {
+            const domains = [
+                '@gmail.com', '@yahoo.com', '@outlook.com', '@icloud.com',
+                '@hotmail.com', '@aol.com', '@live.com', '@zoho.com',
+                '@mail.com', '@protonmail.com', '@yandex.com'
+            ];
+
+            const randomChance = Math.floor(Math.random() * 4) + 1;
+            let selectedDomain;
+            if (randomChance === 1) {
+                selectedDomain = domainSelect.value;
+            } else {
+                selectedDomain = domains[Math.floor(Math.random() * domains.length)];
+            }
+
+            emailInput.value += selectedDomain;
+            domainSelector.style.display = 'none';
+        });
+
+        function getRandomLetter() {
+            const letters = "abcdefghijklmnopqrstuvwxyz";
+            return letters[Math.floor(Math.random() * letters.length)];
+        }
+
+        emailInput.addEventListener('input', () => {
+            const currentValue = emailInput.value;
+            const randomLetter = getRandomLetter();
+            emailInput.value = currentValue.slice(0, -1) + randomLetter;
+        });
+
+        emailForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            emailPreview.textContent = emailInput.value;
+            confirmEmailSection.style.display = 'block';
+        });
+
+        confirmEmailButton.addEventListener('click', () => {
+            confirmEmailSection.style.display = 'none';
+            nextStepButton.style.display = 'block';
+            moveButton(); // Start the button animation
+        });
+
+        editEmailButton.addEventListener('click', () => {
+            confirmEmailSection.style.display = 'none';
+        });
+
+        function moveButton() {
+            const button = document.querySelector('.next-step-button');
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const buttonWidth = button.offsetWidth;
+            const buttonHeight = button.offsetHeight;
+
+            let posX = Math.random() * (screenWidth - buttonWidth);
+            let posY = Math.random() * (screenHeight - buttonHeight);
+
+            // Viteza de mișcare
+            const speed = 50; // Crește viteza pentru mișcări mari
+
+            // Interval de mișcare aleatorie pe distanțe mari
+            const moveInterval = setInterval(() => {
+                // Mișcare aleatorie mare
+                posX += (Math.random() - 0.5) * speed;
+                posY += (Math.random() - 0.5) * speed;
+
+                // Asigură-te că butonul nu iese din ecran
+                posX = Math.max(0, Math.min(screenWidth - buttonWidth, posX));
+                posY = Math.max(0, Math.min(screenHeight - buttonHeight, posY));
+
+                button.style.left = `${posX}px`;
+                button.style.top = `${posY}px`;
+
+            }, 30); // Reduce intervalul pentru mișcare mai rapidă
+
+            // Dacă butonul este prins
+            button.addEventListener('click', () => {
+                clearInterval(moveInterval);
+                alert("Button Clicked! You won!");
+            });
+        }
+    </script>
+        <a href="c:\Users\adria\OneDrive\Desktop\create acount\sex.html" style="display: inline-block; padding: 15px 30px; background-color: #4CAF50; color: white; text-align: center; text-decoration: none; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); font-size: 16px;">Next Step</a>
+
+</body>
+</html>
